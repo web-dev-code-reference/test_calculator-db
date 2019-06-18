@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:calcdb/pages/History.dart';
+import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,8 +10,19 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var _formKey = GlobalKey<FormState>();
   var minimumPadding = 5.0;
-  var btnTxtColor = Colors.white24;
+  var btnTxtColor = Colors.white;
   var btnBgColor = Colors.lightBlue;
+  var btnShapeCorner =  new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0));
+  // var firstNum = 0;
+  // var secondNUm = 0;
+  var firstsecNum=0;
+  var calcOpt='';
+  var displayResult = ''; 
+
+  TextEditingController num1 = TextEditingController();
+  TextEditingController num2 = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +56,20 @@ class _HomeState extends State<Home> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: minimumPadding, bottom: minimumPadding),
+                    child: new Text(
+                      this.displayResult,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(minimumPadding * 2),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: minimumPadding, bottom: minimumPadding),
                     child: TextFormField(
+                      inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                      controller: num1,
+                      keyboardType: TextInputType.number,
                       validator: (String value) {
                         if (value.isEmpty) {
                           return 'Please Enter the first Value';
@@ -67,6 +93,9 @@ class _HomeState extends State<Home> {
                     padding: EdgeInsets.only(
                         top: minimumPadding, bottom: minimumPadding),
                     child: TextFormField(
+                      controller: num2,
+                      inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                      keyboardType: TextInputType.number,
                       validator: (String value) {
                         if (value.isEmpty) {
                           return 'Please Enter the second Value';
@@ -94,6 +123,7 @@ class _HomeState extends State<Home> {
                           child: RaisedButton(
                             color: btnBgColor,
                             textColor: btnTxtColor,
+                            shape: btnShapeCorner,
                             child: Text(
                               '+',
                               textScaleFactor: 1.5,
@@ -107,6 +137,7 @@ class _HomeState extends State<Home> {
                           child: RaisedButton(
                             color: btnBgColor,
                             textColor: btnTxtColor,
+                            shape: btnShapeCorner,
                             child: Text(
                               '-',
                               textScaleFactor: 1.5,
@@ -120,6 +151,7 @@ class _HomeState extends State<Home> {
                           child: RaisedButton(
                             color: btnBgColor,
                             textColor: btnTxtColor,
+                            shape: btnShapeCorner,
                             child: Text(
                               '*',
                               textScaleFactor: 1.5,
@@ -133,6 +165,7 @@ class _HomeState extends State<Home> {
                           child: RaisedButton(
                             color: btnBgColor,
                             textColor: btnTxtColor,
+                            shape: btnShapeCorner,
                             child: Text(
                               '/',
                               textScaleFactor: 1.5,
@@ -147,7 +180,15 @@ class _HomeState extends State<Home> {
                 Padding(
                     padding: EdgeInsets.all(minimumPadding * 2),
                     child: RaisedButton.icon(
-                        onPressed: null,
+                        onPressed: (){
+                       
+                          setState(() {
+                            if(_formKey.currentState.validate()){
+                                this.displayResult = _calcTotal();
+                            }
+                              
+                          });
+                        },
                         icon: Icon(Icons.play_circle_filled),
                         label: new Text('total'))),
               ]),
@@ -155,6 +196,33 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.dashboard),
+        onPressed: (){
+          
+            return NavigateToHistory();
+      
+        },
+      )
     );
   }
+
+  void NavigateToHistory() {
+    Navigator.push(context, MaterialPageRoute(builder:(context){
+      return History();
+    } ));
+  }
+
+  String _calcTotal(){
+    double get_num1 = double.parse(num1.text);
+    double get_num2 = double.parse(num2.text);
+    double totalnum = get_num1 + get_num2;
+    String result = '$totalnum';
+  
+    // double totalAmountPayable = num1 + num2;
+    // return total ;
+    return result;
+  }
+
 }
+
